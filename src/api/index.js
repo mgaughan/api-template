@@ -4,7 +4,10 @@ export default ({ config, db }) => {
   let api = Router()
 
   api.get('/', (req, res) => {
-    res.json({test: 'hey'})
+    db.collection('properties').find().toArray((err, result) => {
+      if (err) throw err
+      res.json(result)
+    })
   })
 
   return api

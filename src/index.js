@@ -3,10 +3,10 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
-import initializeDb from './db'
 import middleware from './middleware'
 import api from './api'
 import config from './config.json'
+import mongodb from 'mongodb'
 
 let app = express()
 app.server = http.createServer(app)
@@ -24,7 +24,7 @@ app.use(bodyParser.json({
 }))
 
 // connect to db
-initializeDb(db => {
+mongodb.MongoClient.connect('mongodb://localhost:27017/apitemplate', (err, db) => {
   // internal middleware
   app.use(middleware({ config, db }))
 
