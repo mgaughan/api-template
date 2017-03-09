@@ -4,7 +4,7 @@ import cors from 'cors'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import middleware from './middleware'
-import api from './api/properties'
+import api from './api/investments' // TODO MG: use index file and import api modules
 import config from './config.json'
 import mongodb from 'mongodb'
 
