@@ -12,5 +12,5 @@ const schema = new mongoose.Schema({
   loanTerm: Number,
   percentageFunded: Number
 })
-// TODO MG: not working with require
-mongoose.model('Investment', schema)
+
+export default mongoose.model('Investment', schema)

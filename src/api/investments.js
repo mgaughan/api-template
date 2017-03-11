@@ -1,38 +1,24 @@
 import { Router } from 'express'
-import mongoose from 'mongoose'
-// require('../models/investments')
+import Investment from '../models/investment'
 
-export default ({ config, db }) => {
-  let api = Router()
-  const schema = new mongoose.Schema({
-    name: String,
-    address: String,
-    classification: String, // TODO MG: number from a enumish?
-    location: String,
-    funds: Number,
-    investmentAmount: Number,
-    apr: Number,
-    arv: Number,
-    loanTerm: Number,
-    percentageFunded: Number
-  })
+let investmentsApi = new Router()
 
-  mongoose.model('Investments', schema)
-
-  const Investments = mongoose.model('Investments')
-
-  api.get('/investments', (req, res) => {
-    // db.collection('investments').find().toArray((err, result) => {
-    //   if (err) throw err
-
-    //   res.json(result)
-    // })
-
-    Investments.find({}, (err, docs) => {
+investmentsApi.use('/', (req, res) => {
+    Investment.find({}, (err, docs) => {
       res.json(docs)
     })
+})
 
-  })
+investmentsApi.use('/new', (req, res) => {
+    const investment = new Investment({
+      name: 'something'
+    })
+    investment.save((err) => {
+      if (err) throw err;
 
-  return api
-}
+      console.log('User saved successfully')
+      res.json({ success: true })
+    })
+})
+
+export default investmentsApi
