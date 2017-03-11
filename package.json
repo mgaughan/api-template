@@ -10,8 +10,10 @@
   "author": "Mike Gaughan michael.t.gaughan@gmail.com",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.16.1",
     "cors": "^2.8.1",
+    "es6-promise": "^4.1.0",
     "express": "^4.14.1",
     "jsonwebtoken": "^7.3.0",
     "mongodb": "^2.2.24",
