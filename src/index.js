@@ -6,9 +6,10 @@ import bodyParser from 'body-parser'
 import middleware from './middleware'
 import api from './api/investments' // TODO MG: use index file and import api modules
 import config from './config.json'
-import mongodb from 'mongodb'
+import mogoose from 'mongoose'
+import path from 'path'
+import fs from 'fs'
 
-const path = require('path')
 let app = express()
 
 app.server = http.createServer(app)
@@ -25,22 +26,17 @@ app.use(bodyParser.json({
   limit: config.bodyLimit
 }))
 
-// app.use('/assets', express.static(`${__dirname}/assets`))
-
 // connect to db
-mongodb.MongoClient.connect('mongodb://localhost:27017/crowdnine', (err, db) => {
-  // internal middleware
-  app.use(middleware({ config, db }))
-
-  // app.get('/', (req, res) => {
-  //   res.sendFile(`${__dirname}/index.html`)
-  // })
-  // api router
-  app.use('/', api({ config, db }))
-
-  app.server.listen(process.env.PORT || config.port)
-
-  console.log(`Started on port ${app.server.address().port}`)
+mogoose.connect('mongodb://localhost:27017/crowdnine', (err) => {
+  if (err) {
+    console.log(err)
+  }
 })
+
+app.server.listen(process.env.PORT || config.port)
+
+console.log(`Started on port ${app.server.address().port}`)
+
+app.use('/', api({ config }))
 
 export default app
