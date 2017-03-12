@@ -6,6 +6,7 @@ import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import routes from './routes'
 import mongoose from 'mongoose'
+// import { Promise } from 'es6-promise'
 
 let app = express()
 
@@ -23,7 +24,7 @@ app.use(bodyParser.json({
 // logger
 app.use(morgan('dev'))
 
-// connect to db
+// mongoose.Promise = Promise
 mongoose.connect(config.database)
 
 app.set('superSecret', config.secret)
