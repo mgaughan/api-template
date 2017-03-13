@@ -4,7 +4,7 @@
   "description": "Template for backend API",
   "main": "dist",
   "scripts": {
-    "dev": "nodemon -w src --exec \"babel-node src/app --presets es2015\"",
+    "dev": "babel-node src/app --presets es2015",
     "test": "eslint src"
   },
   "author": "Mike Gaughan michael.t.gaughan@gmail.com",
@@ -25,6 +25,7 @@
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
     "babel-preset-es2015": "^6.22.0",
+    "babel-register": "^6.24.0",
     "eslint": "^3.16.1",
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.2",

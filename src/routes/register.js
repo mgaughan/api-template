@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import bcrypt from 'bcrypt'
 import User from '../models/user'
 
 let registerApi = new Router()
@@ -6,8 +7,14 @@ let registerApi = new Router()
 registerApi.use('/', (req, res) => {
 
   User.find({email: req.body.email}, (err, docs) => {
+    const errorRes = {
+      success: false,
+      errorMessage: 'There was an issue with your registration.'
+    }
+
     if (err) {
-      console.log(err)
+      res.json(errorRes)
+      return;
     }
 
     if (docs.length) {
@@ -17,22 +24,30 @@ registerApi.use('/', (req, res) => {
       })
       return;
     }
-    const user = new User({ 
-      email: req.body.email,
-      password: req.body.password,
-      entitlements: 1
-    })
-    // save the sample user
-    user.save((err) => {
-      if (err) {
-        res.json({
-          success: false,
-          errorMessage: 'There was an issue with your registration.'
-        })
-      }
+ 
+    const password = req.body.password
+    const saltRounds = 10;
 
-      res.json({
-        success: true 
+    bcrypt.hash(password, saltRounds, (err, salt) => {
+      if (err) {
+        res.json(errorRes)
+        return
+      }
+      const user = new User({ 
+        email: req.body.email,
+        password: salt,
+        entitlements: 1
+      })
+
+      user.save((err) => {
+        if (err) {
+          res.json(errorRes)
+          return
+        }
+
+        res.json({
+          success: true 
+        })
       })
     })
   })

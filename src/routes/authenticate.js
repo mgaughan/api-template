@@ -1,10 +1,11 @@
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import User from '../models/user'
 import app from '../app'
-import jwt from 'jsonwebtoken'
 
 export default (req, res) => {
     User.findOne({
-      username: req.body.username
+      email: req.body.email
     }, (err, user) => {
       if (err) throw err
       if (!user) {
@@ -12,27 +13,29 @@ export default (req, res) => {
           success: false,
           message: 'Authentication failed. User not found.'
         })
-      } else if (user) {
-        // check if password matches
-        if (user.password !== req.body.password) {
+        return
+      }
+      bcrypt.compare(req.body.password, user.password, (err, valid) => {
+        if (err) throw err
+
+        if (!valid) {
           res.json({
-            success: false, 
+            success: false,
             message: 'Authentication failed. Wrong password.'
           })
-        } else {
-          // if user is found and password is right
-          // create a token
-          var token = jwt.sign(user, app.get('superSecret'), {
-            expiresIn: 1440
-          })
-
-          // return the information including token as JSON
-          res.json({
-            success: true,
-            token: token
-          })
+          return
         }
-      }
+        // if user is found and password is right
+        // create a token
+        const token = jwt.sign(user.email, app.get('superSecret'), {
+          expiresIn: 1440
+        })
+        // return the information including token as JSON
+        res.json({
+          success: true,
+          token: token
+        })
+      })
     }
   )
 }
