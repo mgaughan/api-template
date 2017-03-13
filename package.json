@@ -5,13 +5,14 @@
   "main": "dist",
   "scripts": {
     "dev": "babel-node src/app --presets es2015",
-    "test": "eslint src"
+    "lint": "eslint src"
   },
   "author": "Mike Gaughan michael.t.gaughan@gmail.com",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^1.0.2",
     "body-parser": "^1.16.1",
+    "compression": "^1.6.2",
     "cors": "^2.8.1",
     "es6-promise": "^4.1.0",
     "express": "^4.14.1",
