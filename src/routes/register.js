@@ -1,55 +1,23 @@
 import { Router } from 'express'
-import bcrypt from 'bcrypt'
 import User from '../models/user'
 
 let registerApi = new Router()
 
-registerApi.use('/', (req, res) => {
+registerApi.use('/', (req, res, next) => {
+  if (!req.body.email || !req.body.password) {
+    return res.json({ success: false, message: 'Please enter email and password.' })
+  }
 
-  User.find({email: req.body.email}, (err, docs) => {
-    const errorRes = {
-      success: false,
-      errorMessage: 'There was an issue with your registration.'
-    }
+  const user = new User({ 
+    email: req.body.email,
+    password: req.body.password
+  })
 
+  user.save(function(err) {
     if (err) {
-      res.json(errorRes)
-      return;
+      return res.json({ success: false, message: 'That email address already exists.' })
     }
-
-    if (docs.length) {
-      res.json({
-        success: false,
-        errorMessage: 'This email address is already in use.'
-      })
-      return;
-    }
- 
-    const password = req.body.password
-    const saltRounds = 10;
-
-    bcrypt.hash(password, saltRounds, (err, salt) => {
-      if (err) {
-        res.json(errorRes)
-        return
-      }
-      const user = new User({ 
-        email: req.body.email,
-        password: salt,
-        entitlements: 1
-      })
-
-      user.save((err) => {
-        if (err) {
-          res.json(errorRes)
-          return
-        }
-
-        res.json({
-          success: true 
-        })
-      })
-    })
+    res.json({ success: true, message: 'Successfully created new user.' })
   })
 })
 

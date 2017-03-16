@@ -1,56 +1,26 @@
-export {
-  logErrors,
-  clientErrorHandler,
-  errorHandler
-}
-
-// function notFoundError(err, req, res, next) {
-//   // const err = new Error()
-  
-//   err.status = 404;
-//   err.message = 'Not found'
-//   next(err)
-// }
-// export default (err, req, res, next) => {
-//     const errorType = typeof err
-//     let code = 500
-//     let msg = { message: "Internal Server Error" }
-
-//     // switch (err.name) {
-//     //     case 'UnauthorizedError':
-//     //         code = err.status
-//     //         msg = undefined
-//     //         break
-//     //     case 'BadRequestError':
-//     //     case 'UnauthorizedAccessError':
-//     //     case 'NotFoundError':
-//     //         code = err.status
-//     //         msg = err.inner
-//     //         break
-//     //     default:
-//     //         break
-//     // }
-
-//     return res.status(code).json(msg)
-// }
-
-function logErrors(err, req, res, next) {
-  console.error(err.stack)
-  next(err)
-}
-
-function clientErrorHandler(err, req, res, next) {
-  if (req.xhr) {
-    res.status(500).json({ error: 'Something failed' })
-  } else {
-    next(err)
+module.exports = function(err, req, res, next) {
+  if (err && err.message === '404') {
+    err.status = 404
+    err.message = 'The endpoint you are looking for does not exist'
   }
-}
 
-function errorHandler(err, req, res, next) {
-  if (res.headersSent) {
-    return next(err)
+  let status = err.status || err.statusCode || 500
+
+  if (status < 400) status = 500
+
+  res.statusCode = status
+
+  let body = {
+    status: status
   }
-  const status = err.status || 500;
-  res.status(status).json(err)
+
+  // show the stacktrace when not in production
+  if (process.env.NODE_ENV !== 'production') body.stack = err.stack
+
+  body.message = err.message
+
+  if (err.code) body.code = err.code
+  if (err.type) body.type = err.type
+
+  res.status(status).json(body)
 }

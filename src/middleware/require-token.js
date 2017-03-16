@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import app from '../app'
+import config from '../config'
 
 export default (req, res, next) => {
     // check header or url parameters or post parameters for token
@@ -8,17 +8,15 @@ export default (req, res, next) => {
   // decode token
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, app.get('superSecret'), (err, decoded) => {
+    jwt.verify(token, config.secret, (err, decoded) => {
       if (err) {
         return res.json({
           success: false,
           message: 'Failed to authenticate token.'
         })   
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded
-        next()
       }
+      req.decoded = decoded
+      next()
     })
   } else {
     // if there is no token

@@ -1,40 +1,28 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import User from '../models/user'
-import app from '../app'
+import config from '../config/app'
 
 export default (req, res, next) => {
-  User.findOne({ email: req.body.email }, (err, user) => {
-    if (true) {
-      return next(new Error('Random'))
-    }
-    if (!user) {
-      res.json({
-        success: false,
-        message: 'Authentication failed. User not found.'
-      })
-      return
-    }
-    bcrypt.compare(req.body.password, user.password, (err, valid) => {
-      if (err) throw err
+  const failedMessage = { success: false, message: 'Email and password do not match.' }
 
-      if (!valid) {
-        res.json({
-          success: false,
-          message: 'Authentication failed. Wrong password.'
-        })
-        return
-      }
-        // if user is found and password is right
-        // create a token
-      const token = jwt.sign(user.email, app.get('superSecret'), {
-        expiresIn: 1440
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err)
+      return next(err)
+
+    if (!user)
+      return res.json(failedMessage)
+
+    user.comparePassword(req.body.password, function(err, isMatch) {
+      if (err || !isMatch)
+        return res.send({ success: false, message: 'Authentication failed.' })
+
+      // Create token if the password matched and no error was thrown
+      const token = jwt.sign(user, config.secret, {
+        expiresIn: 10080 // in seconds
       })
-      // return the information including token as JSON
-      res.json({
-        success: true,
-        token: token
-      })
+
+      return res.json({ success: true, token: `JWT ${token}` })
     })
   })
 }
