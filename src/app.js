@@ -36,7 +36,7 @@ app.use(passport.initialize())
 app.listen(process.env.PORT || config.port)
 
 app.use('/', routes)
-app.all('*', (res, req, next) => {
+app.all('*', () => {
   next(new Error(404))
 })
 app.use(errorHandler)

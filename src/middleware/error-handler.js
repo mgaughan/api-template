@@ -1,4 +1,4 @@
-module.exports = function(err, req, res, next) {
+module.exports = function (err, req, res, next) {
   if (err && err.message === '404') {
     err.status = 404
     err.message = 'The endpoint you are looking for does not exist'
