@@ -5,7 +5,7 @@
   "main": "dist",
   "scripts": {
     "dev": "nodemon src/app --exec 'npm run lint && babel-node'",
-    "lint": "eslint src"
+    "lint": "eslint src/"
   },
   "author": "Mike Gaughan michael.t.gaughan@gmail.com",
   "license": "MIT",

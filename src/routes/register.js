@@ -8,12 +8,12 @@ registerApi.use('/', (req, res, next) => {
     return res.json({ success: false, message: 'Please enter email and password.' })
   }
 
-  const user = new User({ 
+  const user = new User({
     email: req.body.email,
     password: req.body.password
   })
 
-  user.save(function(err) {
+  user.save(function (err) {
     if (err) {
       return res.json({ success: false, message: 'That email address already exists.' })
     }

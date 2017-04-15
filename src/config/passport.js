@@ -3,7 +3,7 @@ import User from '../models/user'
 import config from '../config/app'
 
 // Setup work and export for the JWT passport strategy
-module.exports = (passport) => {  
+module.exports = (passport) => {
   let options = {}
 
   options.jwtFromRequest = ExtractJwt.fromAuthHeader()
@@ -14,7 +14,7 @@ module.exports = (passport) => {
       if (err) {
         return done(err, false)
       }
-      
+
       if (user) {
         done(null, user)
       } else {

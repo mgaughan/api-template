@@ -37,6 +37,7 @@ app.listen(process.env.PORT || config.port)
 
 app.use('/', routes)
 app.all('*', () => {
+  // eslint-disable-next-line
   next(new Error(404))
 })
 app.use(errorHandler)
